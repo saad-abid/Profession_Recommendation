@@ -1,0 +1,142 @@
+[
+  {
+    "id": 0,
+    "biography": "He specializes in development economics, household economics, and personnel economics. In 2003 he received his Ph.D. in Economics from the London School of Economics. Previously, he has worked as an Assistant Professor of Economics at the University of Chicago, Graduate School of Business and also, as a consultant for the World Bank. Centre for Research and Analysis of Migration",
+    "predicted_label": 27,
+    "predicted_profession": "yoga_teacher",
+    "reason": "The model predicted 'yoga_teacher' because the biography contains keywords such as He, specializes, in, development, economics, which are commonly associated with this profession."
+  },
+  {
+    "id": 1,
+    "biography": "He started out as a DJ and music producer in the electronic music scene in London during the mid 90's. In 2006 he was hired as a composer and music supervisor for Viacom's MTV Networks. At MTV, Emanuel would score several title songs and trailers for programs such as Next, Exposed, the Agency, the MTV Movie Awards and the MTV Music Video Awards. In 2009 Emanuel launched the online searchable music catalog UrbanStyleMusic.com (USM). USM is a one-stop-shop music website for agencies and production companies.",
+    "predicted_label": 27,
+    "predicted_profession": "yoga_teacher",
+    "reason": "The model predicted 'yoga_teacher' because the biography contains keywords such as He, started, out, as, a, which are commonly associated with this profession."
+  },
+  {
+    "id": 2,
+    "biography": "She is averse to all things scary or sad, so she grew up almost exclusively watching sitcoms, romantic and slapstick comedies. She cites “The Simpsons ®” as one of her biggest influences to the degree she has references to the show tattooed on her person. She began writing comedy in 2009 and has been performing stand-up since June 2016. She will eventually be survived by several cats and her hair stylist Geoffrey.",
+    "predicted_label": 17,
+    "predicted_profession": "personal_trainer",
+    "reason": "The model predicted 'personal_trainer' because the biography contains keywords such as She, is, a, verse, to, which are commonly associated with this profession."
+  },
+  {
+    "id": 3,
+    "biography": "Prior to joining USC, she was a mobile news editor at BuzzFeed News, the deputy mobile editor at the Los Angeles Times, an editor at Yahoo News and a reporter at The Associated Press. Tagged: bots buzzbot buzzfeed covering the conventions dnc news bots rnc robots washington post Comments are closed.",
+    "predicted_label": 17,
+    "predicted_profession": "personal_trainer",
+    "reason": "The model predicted 'personal_trainer' because the biography contains keywords such as Prior, to, joining, USC, ,, which are commonly associated with this profession."
+  },
+  {
+    "id": 4,
+    "biography": "Previously, she served as an assistant professor at the National Technical Institute for the Deaf and as an associate professor at the Polytechnic University of Cartagena, Spain. She received her BSE in Mechanical Engineering and her Ph.D in Materials Science and Engineering from Polytechnic University of Cartagena. Dr. Iglesias completed a post doctoral stay at Purdue University (Indiana) where she worked on Large-Scale Manufacturing of Bulk Forms with Nanocrystalline Structures. Her career as an educator encompasses teaching and designing undergraduate (Materials Science, Manufacturing Processes, Welding Technology, Computer-aided Manufacturing, Statics, Strength of Materials and Thermal Fluids lab) and graduate courses (Advanced Materials for Industrial Applications, and Corrosion and Wear of Materials).",
+    "predicted_label": 9,
+    "predicted_profession": "filmmaker",
+    "reason": "The model predicted 'filmmaker' because the biography contains keywords such as Previously, ,, she, served, as, which are commonly associated with this profession."
+  },
+  {
+    "id": 5,
+    "biography": "He holds a degree in B.A.Arch from the University of Nairobi.He is a passionate supporter of the venerable in the society that is why he works and support Rona Foundation in the Advisory board. He is God fearing and a member of Synod of the ACK Diocese of Maseno West. Married to Leah and 4 kids Betty, Noella and Emmanuel.",
+    "predicted_label": 5,
+    "predicted_profession": "composer",
+    "reason": "The model predicted 'composer' because the biography contains keywords such as He, holds, a, degree, in, which are commonly associated with this profession."
+  },
+  {
+    "id": 6,
+    "biography": "Her primary fields of research are the effects of respiratory strategy, lung volume and body posture on voice and voice qualities and their physiological and acoustical correlates.",
+    "predicted_label": 14,
+    "predicted_profession": "painter",
+    "reason": "The model predicted 'painter' because the biography contains keywords such as Her, primary, fields, of, research, which are commonly associated with this profession."
+  },
+  {
+    "id": 7,
+    "biography": "Her research focuses on Traumatic and Sports-related Brain Injury in infants, children and adolescents. Specific areas include the epidemiology, outcome and treatment of paediatric traumatic brain injury focusing on infantile and mild Traumatic Brain Injury.",
+    "predicted_label": 14,
+    "predicted_profession": "painter",
+    "reason": "The model predicted 'painter' because the biography contains keywords such as Her, research, focuses, on, Tra, which are commonly associated with this profession."
+  },
+  {
+    "id": 8,
+    "biography": "She is primarily responsible for trust and estate tax returns. She is also very proficient at the preparation of Form 8824 Like-Kind Exchanges and structuring real estate transactions. [More details]",
+    "predicted_label": 21,
+    "predicted_profession": "professor",
+    "reason": "The model predicted 'professor' because the biography contains keywords such as She, is, primarily, responsible, for, which are commonly associated with this profession."
+  },
+  {
+    "id": 9,
+    "biography": "He is cross-appointed in the departments of Pathology and Medical Education as well as the Division of Neurosurgery. In addition to his teaching duties, he will serve as director of the brain bank at the Center for Alzheimer’s Disease and Related Disorders at SIU School of Medicine.",
+    "predicted_label": 17,
+    "predicted_profession": "personal_trainer",
+    "reason": "The model predicted 'personal_trainer' because the biography contains keywords such as He, is, cross, -appointed, in, which are commonly associated with this profession."
+  },
+  {
+    "id": 10,
+    "biography": "He is a Principal Scientist at Elisabeth Bruyere Research Institute and at the Centre for Global Health, Institute of Population Health. He is a leader of the Canadian Collaboration for Immigrant and Refugee Health (CCIRH), member of the New Canadian Task Force on Preventive Health Care, and practices as a family physician as part of the Champlain Immigrant Health Network.",
+    "predicted_label": 14,
+    "predicted_profession": "painter",
+    "reason": "The model predicted 'painter' because the biography contains keywords such as He, is, a, Principal, Scientist, which are commonly associated with this profession."
+  },
+  {
+    "id": 11,
+    "biography": "Prosper was born and raised in Miami Beach, FL. He received his Bachelor’s degree from Emory University and graduated with honors from the University of Miami School of Law. Upon graduation, Prosper spent several years serving a prosecutor at the Miami-Dade State Attorney’s Office. During this time, he aggressively protected the rights of victims and prosecuted crimes involving attempted murders, trafficking, life felonies, and DUIs. As a prosecutor, Prosper conducted over 30 trials, gaining extensive litigation and courtroom experience. Prosper focuses his practice on helping individuals who have suffered from catastrophic injuries obtain the compensation they deserve.",
+    "predicted_label": 17,
+    "predicted_profession": "personal_trainer",
+    "reason": "The model predicted 'personal_trainer' because the biography contains keywords such as Pros, per, was, born, and, which are commonly associated with this profession."
+  },
+  {
+    "id": 12,
+    "biography": "Ms. Demaison practices medicine in Waxhaw, NC and specializes in Family Medicine. Ms. Demaison is affiliated with Novant Health Presbyterian Medical Center. Ms. Demaison speaks English and Spanish.",
+    "predicted_label": 22,
+    "predicted_profession": "psychologist",
+    "reason": "The model predicted 'psychologist' because the biography contains keywords such as Ms, ., Dem, aison, practices, which are commonly associated with this profession."
+  },
+  {
+    "id": 13,
+    "biography": "She has been travelling the world, and worked, amongst others, on a documentary photography project in India with an orphanage. Check out her work here: www.abelinebentzon.dk",
+    "predicted_label": 17,
+    "predicted_profession": "personal_trainer",
+    "reason": "The model predicted 'personal_trainer' because the biography contains keywords such as She, has, been, travelling, the, which are commonly associated with this profession."
+  },
+  {
+    "id": 14,
+    "biography": "She studied at EFET Paris and NYU New-York respectively. While working in a post-production, she develops her own photographic concept. For a little more than 10 years, Peggy Mella models her world of images and compositions creating a portfolio with a free spirit and modern. She was the winner of the first Paris / Miami Art Fair (100 participants) in 2015.",
+    "predicted_label": 6,
+    "predicted_profession": "dentist",
+    "reason": "The model predicted 'dentist' because the biography contains keywords such as She, studied, at, EF, ET, which are commonly associated with this profession."
+  },
+  {
+    "id": 15,
+    "biography": "He attended the University of California, San Francisco (UCSF), School of Medicine and subsequently trained at Children's Hospital Los Angeles for residency. The average patient rating for Dr. Tolcher is 4.5 stars out of 5. Anthem, Blue Cross/Blue Shield, and Coventry are among the insurance carriers that Dr. Tolcher honors. He has received the following distinction: Southern California Super Doctors. Dr. Tolcher's hospital/clinic affiliations include Providence Tarzana Medical Center, West Hills Hospital & Medical Center, and Children's Hospital Los Angeles (CHLA). He is open to new patients.",
+    "predicted_label": 22,
+    "predicted_profession": "psychologist",
+    "reason": "The model predicted 'psychologist' because the biography contains keywords such as He, attended, the, University, of, which are commonly associated with this profession."
+  },
+  {
+    "id": 16,
+    "biography": "She earned her B.A. in Psychology from the University of Coloardo at Boulder and her Ph.D. in Developmental Psychology with a minor in Quantitative Psychology from the University of Notre Dame. Dr. Nuttall's research focuses on understanding how children and families cope with stress in the family system. She studies family relationships and child development in a variety of stress contexts, with a particular emphasis on identifying adaptive processes and resilience. She conducts process-oriented basic research with the goal of informing preventive interventions aimed at supporting positive outcomes for children, siblings, and parents.",
+    "predicted_label": 25,
+    "predicted_profession": "surgeon",
+    "reason": "The model predicted 'surgeon' because the biography contains keywords such as She, earned, her, B, .A, which are commonly associated with this profession."
+  },
+  {
+    "id": 17,
+    "biography": "He is a veteran of the state and federal courts who is regularly called upon by other law firms to handle their cases. He represents clients in matters throughout the metropolitan area.",
+    "predicted_label": 14,
+    "predicted_profession": "painter",
+    "reason": "The model predicted 'painter' because the biography contains keywords such as He, is, a, veteran, of, which are commonly associated with this profession."
+  },
+  {
+    "id": 18,
+    "biography": "A specialist in helping families dealing with adolescent substance abuse, she authored \"From Monsters to Miracles: Parent-Driven Recovery Tools That Work\" and previously founded a sober high school. She serves on the University of Houston Board of Visitors, chairing the Medical School Task Force, and serves on the College of Education's Capital Campaign Committee. Edens has a bachelor's in math and computer science from Southern Methodist University and three degrees from UH - an M.B.A. ('77), an M.Ed. in counseling psychology ('89) and a Ph.D. in counseling psychology ('94).",
+    "predicted_label": 6,
+    "predicted_profession": "dentist",
+    "reason": "The model predicted 'dentist' because the biography contains keywords such as A, specialist, in, helping, families, which are commonly associated with this profession."
+  },
+  {
+    "id": 19,
+    "biography": "The title of his talk is “Social and non-social cognitive dysfunctions in cocaine users are partially drug-induced but reversible: evidence from a longitudinal study”.",
+    "predicted_label": 17,
+    "predicted_profession": "personal_trainer",
+    "reason": "The model predicted 'personal_trainer' because the biography contains keywords such as The, title, of, his, talk, which are commonly associated with this profession."
+  }
+]
