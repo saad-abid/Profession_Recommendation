@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import Header from "@/components/Header";
 import Breadcrumb from "@/components/Breadcrumb";
 import SimilarProfiles from "@/components/SimilarProfiles";
-import { Bot, PenLine } from "lucide-react";
+import { Bot, PenLine, Info } from "lucide-react";
 
 /* ---------------- TYPES ---------------- */
 
@@ -11,7 +11,9 @@ type ProfileData = {
   id: number;
   biography: string;
   predicted_profession: string;
-  reason: string;
+  skill_domain: string;
+  experience_level: number;
+  biography_length: string;
 };
 
 /* ---------------- COMPONENT ---------------- */
@@ -35,13 +37,9 @@ const BiographyPage = () => {
         const found = data.find((item) => item.id === Number(id));
         setProfile(found ?? null);
       })
-      .catch((err) => {
-        console.error("Failed to load biography", err);
-      })
       .finally(() => setLoading(false));
   }, [id]);
 
-  /* ---- Loading / Error ---- */
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -65,12 +63,14 @@ const BiographyPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Breadcrumb items={breadcrumbItems} />
 
-      <main className="max-w-7xl mx-auto px-6 pb-8">
+      <main className="max-w-7xl mx-auto px-6 py-6">
+        {/* Breadcrumb aligned with Home/Search */}
+        <Breadcrumb items={breadcrumbItems} />
+        <div className="mb-4" />
+
         <div className="bg-card rounded-xl shadow-sm overflow-hidden">
-
-          {/* Header */}
+          {/* Page Header */}
           <div className="bg-secondary/50 px-6 py-3 border-b border-border">
             <h2 className="text-lg font-medium text-foreground">
               Biography {profile.id + 1}
@@ -80,37 +80,79 @@ const BiographyPage = () => {
           <div className="p-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-              {/* LEFT: Biography */}
-              <div className="bg-card rounded-xl border border-border p-6 min-h-[300px]">
+              {/* ---------------- LEFT: BIOGRAPHY ---------------- */}
+              <div className="bg-card rounded-xl border border-border p-6">
+
+                {/* 🔹 3.1 KEY SIGNALS SUMMARY */}
+                <div className="flex flex-wrap gap-4 mb-6 text-sm">
+                  <span className="bg-secondary px-3 py-1 rounded-full">
+                    🎓 Skill Domain: <strong>{profile.skill_domain}</strong>
+                  </span>
+                  <span className="bg-secondary px-3 py-1 rounded-full">
+                    📊 Experience Level: <strong>High</strong>
+                  </span>
+                  <span className="bg-secondary px-3 py-1 rounded-full">
+                    📄 Biography Length: <strong>{profile.biography_length}</strong>
+                  </span>
+                </div>
+
                 <h3 className="font-semibold text-foreground mb-4">
                   Biography Details
                 </h3>
+
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   {profile.biography}
                 </p>
               </div>
 
-              {/* RIGHT: Recommendation Mode */}
+              {/* ---------------- RIGHT: RECOMMENDATION MODES ---------------- */}
               <div className="bg-card rounded-xl border border-border p-6 flex flex-col">
-                <h3 className="text-center font-semibold text-foreground mb-6">
-                  Select Recommendation Mode
-                </h3>
+
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <h3 className="font-semibold text-foreground">
+                    Select Recommendation Mode
+                  </h3>
+
+                  {/* 🔹 3.3 TOOLTIP */}
+                  <div className="group relative cursor-pointer">
+                    <Info className="w-4 h-4 text-muted-foreground" />
+                    <div className="absolute z-10 hidden group-hover:block bg-card border border-border text-xs text-muted-foreground p-3 rounded-lg w-64 -left-28 top-6 shadow-md">
+                      Different recommendation modes help compare AI judgment
+                      with human reasoning for better decision-making.
+                    </div>
+                  </div>
+                </div>
+
+                {/* 🔹 3.2 MICROCOPY */}
+                <p className="text-sm text-muted-foreground text-center mb-6">
+                  Choose how you want the profession recommendation to be made.
+                </p>
 
                 <div className="space-y-3">
                   <Link
                     to={`/recommendations/${profile.id}?tab=ai`}
-                    className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90"
+                    className="w-full flex flex-col items-center justify-center gap-1 py-4 px-4 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition"
                   >
-                    AI Assisted Recommendations
-                    <Bot className="w-4 h-4" />
+                    <div className="flex items-center gap-2">
+                      AI Assisted Recommendations
+                      <Bot className="w-4 h-4" />
+                    </div>
+                    <span className="text-xs opacity-90">
+                      Based on trained model patterns
+                    </span>
                   </Link>
 
                   <Link
                     to={`/recommendations/${profile.id}?tab=manual`}
-                    className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-secondary text-foreground font-medium hover:bg-muted"
+                    className="w-full flex flex-col items-center justify-center gap-1 py-4 px-4 rounded-lg bg-secondary text-foreground font-medium hover:bg-muted transition"
                   >
-                    Manual Recommendations
-                    <PenLine className="w-4 h-4" />
+                    <div className="flex items-center gap-2">
+                      Manual Recommendations
+                      <PenLine className="w-4 h-4" />
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      Based on your own interpretation
+                    </span>
                   </Link>
                 </div>
 
@@ -121,7 +163,6 @@ const BiographyPage = () => {
 
             </div>
           </div>
-
         </div>
       </main>
     </div>

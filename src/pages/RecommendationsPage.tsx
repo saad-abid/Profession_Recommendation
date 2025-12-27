@@ -11,12 +11,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { CheckCircle, AlertCircle, HelpCircle } from "lucide-react";
+import jsPDF from "jspdf";
+
+/* ---------------- TYPES ---------------- */
 
 type ProfileData = {
   id: number;
+  biography: string;
   predicted_profession: string;
   reason: string;
+  confidence_score: number;
 };
+
+/* ---------------- COMPONENT ---------------- */
 
 const RecommendationsPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -26,8 +34,11 @@ const RecommendationsPage = () => {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Manual recommendation state
-  const [manualProfession, setManualProfession] = useState<string>("");
+  /* ---- Manual Recommendation ---- */
+  const [manualProfession, setManualProfession] = useState("");
+  const [manualConfidence, setManualConfidence] = useState<
+    "low" | "moderate" | "high" | null
+  >(null);
 
   const breadcrumbItems = [
     { label: "Home", href: "/" },
@@ -35,7 +46,7 @@ const RecommendationsPage = () => {
     { label: tab === "ai" ? "AI Recommendation" : "Manual Recommendation" },
   ];
 
-  /* ---- Load from JSON ---- */
+  /* ---- Load JSON ---- */
   useEffect(() => {
     fetch("/profession_predictions.json")
       .then((res) => res.json())
@@ -46,9 +57,105 @@ const RecommendationsPage = () => {
       .finally(() => setLoading(false));
   }, [id]);
 
-  const generatePdf = () => {
-    alert("PDF generated successfully!");
-  };
+  /* ---------------- PDF GENERATION ---------------- */
+
+ const generatePdf = () => {
+  if (!profile) return;
+
+  const doc = new jsPDF();
+  const timestamp = new Date().toLocaleString();
+
+  const confidenceText =
+    tab === "ai"
+      ? "High"
+      : manualConfidence === "high"
+      ? "High"
+      : manualConfidence === "moderate"
+      ? "Moderate"
+      : "Low";
+
+  let y = 20;
+
+  /* ---------- TITLE ---------- */
+  doc.setFontSize(16);
+  doc.text("Biography Report", 14, y);
+
+  y += 8;
+  doc.setFontSize(10);
+  doc.text(`Generated: ${timestamp}`, 14, y);
+
+  /* ---------- BIOGRAPHY ID ---------- */
+  y += 12;
+  doc.setFontSize(12);
+  doc.text(`Biography ID: ${profile.id + 1}`, 14, y);
+
+  /* ---------- BIOGRAPHY ---------- */
+  y += 10;
+  doc.setFontSize(12);
+  doc.text("Biography", 14, y);
+
+  y += 2;
+  doc.setLineWidth(0.3);
+  doc.line(14, y, 196, y);
+
+  y += 6;
+  doc.setFontSize(11);
+  const bioText = doc.splitTextToSize(profile.biography, 180);
+  doc.text(bioText, 14, y);
+
+  y += bioText.length * 6 + 6;
+
+  /* ---------- RECOMMENDATION SUMMARY ---------- */
+  doc.setFontSize(12);
+  doc.text("Recommendation Summary", 14, y);
+
+  y += 2;
+  doc.line(14, y, 196, y);
+
+  y += 6;
+  doc.setFontSize(11);
+  doc.text(`Type: ${tab === "ai" ? "AI Assisted" : "Manual"}`, 14, y);
+
+  y += 6;
+  doc.text(
+    `Profession: ${
+      tab === "ai" ? profile.predicted_profession : manualProfession
+    }`,
+    14,
+    y
+  );
+
+  y += 6;
+  const aiConfidenceDisplay =
+  tab === "ai"
+    ? `${confidenceText} (${profile.confidence_score}%)`
+    : confidenceText;
+
+  doc.text(`Confidence: ${aiConfidenceDisplay}`, 14, y);
+
+
+  /* ---------- EXPLANATION ---------- */
+  y += 10;
+  doc.setFontSize(12);
+  doc.text("Explanation", 14, y);
+
+  y += 2;
+  doc.line(14, y, 196, y);
+
+  y += 6;
+  doc.setFontSize(11);
+  const explanationText =
+    tab === "ai"
+      ? profile.reason
+      : "This recommendation was made manually based on user interpretation of the biography.";
+
+  doc.text(doc.splitTextToSize(explanationText, 180), 14, y);
+
+  /* ---------- SAVE ---------- */
+  doc.save(`Biography_${profile.id + 1}_Report.pdf`);
+};
+
+  /* ---------------- RENDER ---------------- */
 
   if (loading) return <p className="p-6">Loading recommendation...</p>;
   if (!profile) return <p className="p-6">Recommendation not found.</p>;
@@ -56,11 +163,12 @@ const RecommendationsPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Breadcrumb items={breadcrumbItems} />
 
-      <main className="max-w-7xl mx-auto px-6 pb-8">
+      <main className="max-w-7xl mx-auto px-6 py-6">
+        <Breadcrumb items={breadcrumbItems} />
+        <div className="mb-4" />
+
         <div className="bg-card rounded-xl shadow-sm overflow-hidden">
-
           {/* Tabs */}
           <div className="flex border-b border-border">
             <div className="px-6 py-3 text-sm font-medium bg-secondary/50 border-r border-border">
@@ -91,46 +199,43 @@ const RecommendationsPage = () => {
           </div>
 
           <div className="p-6">
-            {tab === "ai" ? (
-              <>
-                {/* AI Recommendation */}
-                <div className="bg-card border border-border rounded-xl p-6 mb-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="md:col-span-2">
-                      <h3 className="text-lg font-semibold mb-1">
-                        Recommended Profession
-                      </h3>
-                      <p className="text-muted-foreground mb-4">
+            {/* MAIN CARD */}
+            <div className="bg-card border border-border rounded-xl p-6 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* LEFT */}
+                <div className="md:col-span-2">
+                  <h3 className="text-lg font-semibold mb-2">
+                    Recommended Profession
+                  </h3>
+
+                  {tab === "ai" ? (
+                    <>
+                      <p className="text-muted-foreground mb-4 capitalize">
                         {profile.predicted_profession}
                       </p>
 
-                      <h4 className="text-sm font-semibold uppercase tracking-wide mb-2">
+                      <h4 className="text-sm font-semibold uppercase mb-2">
                         Explanation
                       </h4>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground mb-2">
                         {profile.reason}
                       </p>
-                    </div>
 
-                    <div className="flex items-center justify-center">
-                      <ConfidenceScore score={90} />
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                {/* Manual Recommendation */}
-                <div className="mb-6 flex justify-center">
-                  <Select
-                    value={manualProfession}
-                    onValueChange={setManualProfession}
-                  >
-                    <SelectTrigger className="w-64">
-                      <SelectValue placeholder="Select profession" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Accountant">Accountant</SelectItem>
+                      <p className="text-xs text-muted-foreground italic">
+                        AI confidence reflects model certainty, not correctness.
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <Select
+                        value={manualProfession}
+                        onValueChange={setManualProfession}
+                      >
+                        <SelectTrigger className="w-64 mb-4">
+                          <SelectValue placeholder="Select profession" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Accountant">Accountant</SelectItem>
                       <SelectItem value="Architect">Architect</SelectItem>
                       <SelectItem value="Chiropractor">Chiropractor</SelectItem>
                       <SelectItem value="Comedian">Comedian</SelectItem>
@@ -144,34 +249,110 @@ const RecommendationsPage = () => {
                       <SelectItem value="Model">Model</SelectItem>
                       <SelectItem value="Software engineer">Software engineer</SelectItem>
                       <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
+                        </SelectContent>
+                      </Select>
+
+                      {manualProfession && (
+                        <>
+                          <p className="text-sm text-muted-foreground mb-4">
+                            Manually selected profession:{" "}
+                            <strong>{manualProfession}</strong>
+                          </p>
+
+                          <h4 className="text-sm font-semibold mb-2">
+                            How confident are you?
+                          </h4>
+
+                          <div className="flex gap-3">
+                            <button
+                              onClick={() => setManualConfidence("low")}
+                              className={`px-4 py-2 rounded-lg text-sm flex items-center gap-2 border ${
+                                manualConfidence === "low"
+                                  ? "bg-red-100 border-red-400"
+                                  : "hover:bg-secondary"
+                              }`}
+                              title="Uncertain, weak match"
+                            >
+                              <AlertCircle className="w-4 h-4 text-red-500" />
+                              Low
+                            </button>
+
+                            <button
+                              onClick={() => setManualConfidence("moderate")}
+                              className={`px-4 py-2 rounded-lg text-sm flex items-center gap-2 border ${
+                                manualConfidence === "moderate"
+                                  ? "bg-yellow-100 border-yellow-400"
+                                  : "hover:bg-secondary"
+                              }`}
+                              title="Some evidence in biography"
+                            >
+                              <HelpCircle className="w-4 h-4 text-yellow-500" />
+                              Moderate
+                            </button>
+
+                            <button
+                              onClick={() => setManualConfidence("high")}
+                              className={`px-4 py-2 rounded-lg text-sm flex items-center gap-2 border ${
+                                manualConfidence === "high"
+                                  ? "bg-green-100 border-green-400"
+                                  : "hover:bg-secondary"
+                              }`}
+                              title="Strong alignment with profession"
+                            >
+                              <CheckCircle className="w-4 h-4 text-green-600" />
+                              High
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </>
+                  )}
                 </div>
 
-                {manualProfession && (
-                  <div className="bg-secondary/30 border border-border rounded-xl p-6 mb-6">
-                    <h3 className="text-lg font-semibold mb-1">
-                      Recommended Profession
-                    </h3>
-                    <p className="text-muted-foreground">
-                      {manualProfession}
-                    </p>
-                  </div>
-                )}
-              </>
-            )}
+                {/* RIGHT */}
+                <div className="flex items-center justify-center">
+                  {tab === "ai" ? (
+                    <ConfidenceScore score={profile.confidence_score} />
+                  ) : manualConfidence ? (
+                    <ConfidenceScore
+                      score={
+                        manualConfidence === "low"
+                          ? 33
+                          : manualConfidence === "moderate"
+                          ? 66
+                          : 100
+                      }
+                      label="User Confidence"
+                    />
+                  ) : (
+                    <ConfidenceScore score={0} label="Select Confidence" />
+                  )}
+                </div>
+              </div>
+            </div>
 
-            {/* Generate PDF */}
-            <div className="flex justify-center mt-6">
+            {/* PDF BUTTON */}
+            <div className="flex flex-col items-center gap-2">
               <button
                 onClick={generatePdf}
-                className="py-3 px-8 bg-primary text-primary-foreground font-medium rounded-lg hover:opacity-90"
+                disabled={tab === "manual" && !manualConfidence}
+                className={`py-3 px-8 rounded-lg font-medium ${
+                  tab === "manual" && !manualConfidence
+                    ? "bg-muted text-muted-foreground cursor-not-allowed"
+                    : "bg-primary text-primary-foreground hover:opacity-90"
+                }`}
               >
                 Generate PDF
               </button>
+
+              {tab === "manual" && !manualConfidence && (
+                <p className="text-xs text-muted-foreground">
+                  Please select confidence level to continue
+                </p>
+              )}
             </div>
 
-            <div className="mt-8">
+            <div className="mt-10">
               <SimilarProfiles />
             </div>
           </div>
