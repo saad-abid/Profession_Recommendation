@@ -19,10 +19,10 @@ This project is built with:
 1) Clone the repository
 
 2) Navigate into the project folder
-   cd <your-repo-name>
-3) Install dependencies
-   npm install
-4) Start the development server
-   npm run dev
+   - cd <your-repo-name>
+4) Install dependencies
+   - npm install
+5) Start the development server
+   - npm run dev
 Project will run on
-(http://localhost:8080/)
+- (http://localhost:8080/)
