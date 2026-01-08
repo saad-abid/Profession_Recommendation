@@ -24,5 +24,5 @@ This project is built with:
    - npm install
 5) Start the development server
    - npm run dev
-Project will run on
+6) Project will run on
 - (http://localhost:8080/)
