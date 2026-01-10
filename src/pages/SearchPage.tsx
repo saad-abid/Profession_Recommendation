@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import FilterChip from "@/components/FilterChip";
@@ -25,35 +25,11 @@ type ProfileData = {
 
 const ITEMS_PER_PAGE = 10;
 
-const skillDomains = [
-  "Education",
-  "Arts",
-  "Business",
-  "Design",
-  "Science",
-  "Healthcare",
-];
+const skillDomains = ["Education", "Arts", "Business", "Design", "Science", "Healthcare"];
+const aiConfidenceLevels = ["High Confidence", "Medium Confidence", "Low Confidence"];
+const biographyLengths = ["Short Biography", "Medium Biography", "Detailed Biography"];
 
-const aiConfidenceLevels = [
-  "High Confidence",
-  "Medium Confidence",
-  "Low Confidence",
-];
-
-const biographyLengths = [
-  "Short Biography",
-  "Medium Biography",
-  "Detailed Biography",
-];
-
-const profileColors = [
-  "cyan",
-  "yellow",
-  "teal",
-  "cyan",
-  "pink",
-  "teal",
-] as const;
+const profileColors = ["cyan", "yellow", "teal", "cyan", "pink", "teal"] as const;
 
 /* ---------------- COMPONENT ---------------- */
 
@@ -76,9 +52,11 @@ const SearchPage = () => {
 
   /* ---- Load JSON ---- */
   useEffect(() => {
+    setLoadingProfiles(true);
     fetch("/profession_predictions.json")
       .then((res) => res.json())
       .then((data: ProfileData[]) => setProfiles(data))
+      .catch(() => setProfiles([]))
       .finally(() => setLoadingProfiles(false));
   }, []);
 
@@ -100,23 +78,13 @@ const SearchPage = () => {
     );
   };
 
-  /* ---- Apply Search + Filters ---- */
-  const filteredProfiles = profiles.filter((profile) => {
-    const bioText = profile.biography.toLowerCase();
-
-    return (
-      (searchQuery === "" || bioText.includes(searchQuery.toLowerCase())) &&
-      (activeDomains.length === 0 || activeDomains.includes(profile.skill_domain)) &&
-      (activeConfidence.length === 0 || activeConfidence.includes(profile.ai_confidence)) &&
-      (activeBioLengths.length === 0 || activeBioLengths.includes(profile.biography_length)) &&
-      profile.experience_level >= experienceRange[0]
-    );
-  });
-
-  /* ---- Pagination ---- */
-  const totalPages = Math.ceil(filteredProfiles.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedProfiles = filteredProfiles.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  /* ---- Remove chip by category (prevents removing from wrong list) ---- */
+  const removeChip = (chip: { type: "domain" | "confidence" | "bio"; value: string }) => {
+    if (chip.type === "domain") setActiveDomains((prev) => prev.filter((v) => v !== chip.value));
+    if (chip.type === "confidence")
+      setActiveConfidence((prev) => prev.filter((v) => v !== chip.value));
+    if (chip.type === "bio") setActiveBioLengths((prev) => prev.filter((v) => v !== chip.value));
+  };
 
   const resetAllFilters = () => {
     setSearchQuery("");
@@ -125,6 +93,52 @@ const SearchPage = () => {
     setActiveConfidence([]);
     setActiveBioLengths([]);
   };
+
+  /* ---- Apply Search + Filters ---- */
+  const filteredProfiles = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+
+    return profiles.filter((profile) => {
+      const bioText = profile.biography.toLowerCase();
+
+      const matchesSearch = q === "" || bioText.includes(q);
+      const matchesDomain = activeDomains.length === 0 || activeDomains.includes(profile.skill_domain);
+      const matchesConfidence =
+        activeConfidence.length === 0 || activeConfidence.includes(profile.ai_confidence);
+      const matchesBioLength =
+        activeBioLengths.length === 0 || activeBioLengths.includes(profile.biography_length);
+      const matchesExperience = profile.experience_level >= experienceRange[0];
+
+      return (
+        matchesSearch &&
+        matchesDomain &&
+        matchesConfidence &&
+        matchesBioLength &&
+        matchesExperience
+      );
+    });
+  }, [profiles, searchQuery, activeDomains, activeConfidence, activeBioLengths, experienceRange]);
+
+  /* ---- Pagination ---- */
+  const totalPages = Math.max(1, Math.ceil(filteredProfiles.length / ITEMS_PER_PAGE));
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedProfiles = filteredProfiles.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  /* ---- Active Chips (grouped) ---- */
+  const activeChips = useMemo(() => {
+    const chips: { type: "domain" | "confidence" | "bio"; value: string }[] = [];
+    activeDomains.forEach((v) => chips.push({ type: "domain", value: v }));
+    activeConfidence.forEach((v) => chips.push({ type: "confidence", value: v }));
+    activeBioLengths.forEach((v) => chips.push({ type: "bio", value: v }));
+    return chips;
+  }, [activeDomains, activeConfidence, activeBioLengths]);
+
+  const hasAnyFilter =
+    searchQuery.trim() !== "" ||
+    experienceRange[0] > 0 ||
+    activeDomains.length > 0 ||
+    activeConfidence.length > 0 ||
+    activeBioLengths.length > 0;
 
   /* ---------------- RENDER ---------------- */
 
@@ -137,7 +151,6 @@ const SearchPage = () => {
 
         <div className="bg-card rounded-xl shadow-sm p-6">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-
             {/* ---------------- FILTER SIDEBAR ---------------- */}
             <div className="lg:col-span-1">
               <div className="bg-secondary/30 rounded-xl p-4">
@@ -148,17 +161,13 @@ const SearchPage = () => {
                     <ChevronLeft className="w-4 h-4" />
                     <div>
                       <p className="text-sm font-medium">Filter Biographies</p>
-                      <p className="text-xs text-muted-foreground">
-                        Explore before prediction
-                      </p>
+                      <p className="text-xs text-muted-foreground">Explore before prediction</p>
                     </div>
                   </div>
 
                   {/* Keyword */}
                   <div>
-                    <label className="text-sm font-medium mb-2 block">
-                      Search Biography
-                    </label>
+                    <label className="text-sm font-medium mb-2 block">Search Biography</label>
                     <input
                       type="text"
                       placeholder="Search keywords (e.g. doctor, music)"
@@ -170,9 +179,10 @@ const SearchPage = () => {
 
                   {/* Experience */}
                   <div>
-                    <label className="text-sm font-medium mb-2 block">
-                      Minimum Experience Level
-                    </label>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-sm font-medium block">Minimum Experience Level</label>
+                      <span className="text-xs text-muted-foreground">{experienceRange[0]}</span>
+                    </div>
                     <Slider
                       value={experienceRange}
                       onValueChange={setExperienceRange}
@@ -183,9 +193,7 @@ const SearchPage = () => {
 
                   {/* Skill Domain */}
                   <div>
-                    <label className="text-sm font-medium mb-2 block">
-                      Skill Domain
-                    </label>
+                    <label className="text-sm font-medium mb-2 block">Skill Domain</label>
                     <div className="grid grid-cols-2 gap-2">
                       {skillDomains.map((domain) => (
                         <FilterChip
@@ -200,18 +208,14 @@ const SearchPage = () => {
 
                   {/* AI Confidence */}
                   <div>
-                    <label className="text-sm font-medium mb-2 block">
-                      AI Confidence
-                    </label>
+                    <label className="text-sm font-medium mb-2 block">AI Confidence</label>
                     <div className="grid grid-cols-2 gap-2">
                       {aiConfidenceLevels.map((level) => (
                         <FilterChip
                           key={level}
                           label={level}
                           active={activeConfidence.includes(level)}
-                          onClick={() =>
-                            toggleFilter(level, activeConfidence, setActiveConfidence)
-                          }
+                          onClick={() => toggleFilter(level, activeConfidence, setActiveConfidence)}
                         />
                       ))}
                     </div>
@@ -219,58 +223,77 @@ const SearchPage = () => {
 
                   {/* Biography Length */}
                   <div>
-                    <label className="text-sm font-medium mb-2 block">
-                      Biography Detail
-                    </label>
+                    <label className="text-sm font-medium mb-2 block">Biography Detail</label>
                     <div className="grid grid-cols-2 gap-2">
                       {biographyLengths.map((length) => (
                         <FilterChip
                           key={length}
                           label={length}
                           active={activeBioLengths.includes(length)}
-                          onClick={() =>
-                            toggleFilter(length, activeBioLengths, setActiveBioLengths)
-                          }
+                          onClick={() => toggleFilter(length, activeBioLengths, setActiveBioLengths)}
                         />
                       ))}
                     </div>
                   </div>
+
+                  {/* Reset */}
+                  <button
+                    onClick={resetAllFilters}
+                    className="w-full py-2 rounded-md text-sm bg-secondary hover:bg-muted"
+                  >
+                    Reset all filters
+                  </button>
                 </div>
               </div>
             </div>
 
             {/* ---------------- PROFILE GRID ---------------- */}
             <div className="lg:col-span-3">
+              {/* Filter chips + counts */}
               {!loadingProfiles && (
                 <>
-                  {/* Active Filters Summary */}
-                  {(activeDomains.length ||
-                    activeConfidence.length ||
-                    activeBioLengths.length ||
-                    searchQuery) && (
-                    <div className="mb-4 flex flex-wrap gap-2">
-                      {[...activeDomains, ...activeConfidence, ...activeBioLengths].map(
-                        (filter) => (
-                          <span
-                            key={filter}
-                            className="flex items-center gap-1 bg-secondary px-3 py-1 rounded-full text-xs"
-                          >
-                            {filter}
-                            <XCircle
-                              className="w-3 h-3 cursor-pointer"
-                              onClick={() => {
-                                toggleFilter(filter, activeDomains, setActiveDomains);
-                                toggleFilter(filter, activeConfidence, setActiveConfidence);
-                                toggleFilter(filter, activeBioLengths, setActiveBioLengths);
-                              }}
-                            />
-                          </span>
-                        )
+                  {/* Chips row */}
+                  {hasAnyFilter && (
+                    <div className="mb-4 flex flex-wrap items-center gap-2">
+                      {/* Search chip */}
+                      {searchQuery.trim() !== "" && (
+                        <span className="flex items-center gap-1 bg-secondary px-3 py-1 rounded-full text-xs">
+                          Search: “{searchQuery.trim()}”
+                          <XCircle
+                            className="w-3 h-3 cursor-pointer"
+                            onClick={() => setSearchQuery("")}
+                          />
+                        </span>
                       )}
+
+                      {/* Experience chip */}
+                      {experienceRange[0] > 0 && (
+                        <span className="flex items-center gap-1 bg-secondary px-3 py-1 rounded-full text-xs">
+                          Min exp: {experienceRange[0]}
+                          <XCircle
+                            className="w-3 h-3 cursor-pointer"
+                            onClick={() => setExperienceRange([0])}
+                          />
+                        </span>
+                      )}
+
+                      {/* Grouped chips */}
+                      {activeChips.map((chip) => (
+                        <span
+                          key={`${chip.type}-${chip.value}`}
+                          className="flex items-center gap-1 bg-secondary px-3 py-1 rounded-full text-xs"
+                        >
+                          {chip.value}
+                          <XCircle
+                            className="w-3 h-3 cursor-pointer"
+                            onClick={() => removeChip(chip)}
+                          />
+                        </span>
+                      ))}
                     </div>
                   )}
 
-                  {/* Result Count */}
+                  {/* Result count */}
                   <p className="text-sm text-muted-foreground mb-4">
                     Showing {filteredProfiles.length} of {profiles.length} biographies
                   </p>
@@ -282,9 +305,7 @@ const SearchPage = () => {
               ) : paginatedProfiles.length === 0 ? (
                 /* Empty State */
                 <div className="text-center py-16">
-                  <p className="text-lg font-medium mb-2">
-                    No biographies match your filters
-                  </p>
+                  <p className="text-lg font-medium mb-2">No biographies match your filters</p>
                   <p className="text-sm text-muted-foreground mb-4">
                     Try adjusting or clearing your filters to see more results.
                   </p>
@@ -319,21 +340,19 @@ const SearchPage = () => {
 
                   {/* Pagination */}
                   <div className="flex justify-center gap-2 mt-8">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                      (page) => (
-                        <button
-                          key={page}
-                          onClick={() => setCurrentPage(page)}
-                          className={`px-4 py-2 rounded-md text-sm ${
-                            page === currentPage
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-secondary hover:bg-muted"
-                          }`}
-                        >
-                          {page}
-                        </button>
-                      )
-                    )}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`px-4 py-2 rounded-md text-sm ${
+                          page === currentPage
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary hover:bg-muted"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
                   </div>
                 </>
               )}
